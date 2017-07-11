@@ -29,7 +29,7 @@ function searchWeek(){
 
 
 
-serial=$( echo "$SerialNumber" | tr '[:upper:]' '[:lower:]')
+serial=$( system_profiler SPHardwareDataType | awk '$1~"Serial" {print $4}' | tr '[:upper:]' '[:lower:]')
 yearmarker=$(echo "$serial" | cut -c4 | tr '[:upper:]' '[:lower:]')
 weekmarker=$(echo "$serial" | cut -c5 | tr '[:upper:]' '[:lower:]')
 yearoptions=('c' 'd' 'f' 'g' 'h' 'j' 'k' 'l' 'm' 'n' 'p' 'q' 'r' 's' 't' 'v' 'w' 'x' 'y' 'z')
@@ -37,22 +37,20 @@ weekoptions=('1' '2' '3' '4' '5' '6' '7' '8' '9' 'c' 'd' 'f' 'g' 'h' 'j' 'k' 'l'
 
 ## Work Area ###############################
 
-echo "$serial"
-echo "$yearval"
+
 # getting the estimated year of manufacture based on Serial
 searchYear
 
 estYear=$((2010 + ${yearval}/2 ))
 estYearHalf=$((${yearval} % 2))
 
-echo $estYear
-echo $estYearHalf
+
 
 # getting getting the estimated week of manufacture based on Serial 
 searchWeek
 
 estWeek=$(( ${weekval} + ${estYearHalf}*26 -1 ))
-echo $estWeek
+
 
 week_day_of_Jan_1="$(date -j -f "%Y%m%d" "20160101" +%w)"
 if [[ $week_day_of_Jan_1 == "1" ]]; then
